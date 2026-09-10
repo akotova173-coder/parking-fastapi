@@ -28,6 +28,16 @@ def create_client(client: schemas.ClientCreate, db: Session = Depends(get_db)):
 def create_parking(parking: schemas.ParkingCreate, db: Session = Depends(get_db)):
     return crud.create_parking(db, parking)
 
+@app.get("/parkings/{parking_id}", response_model=schemas.Parking)
+def get_parking(
+    parking_id: int,
+    db: Session = Depends(get_db),
+):
+    parking = crud.get_parking(db, parking_id)
+    if not parking:
+        raise HTTPException(status_code=404, detail="Parking not found")
+    return parking
+
 @app.post("/client_parkings", response_model=schemas.ClientParking, status_code=201)
 def enter_parking(
     record: schemas.ClientParkingCreate,
