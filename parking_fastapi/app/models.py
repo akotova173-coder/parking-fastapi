@@ -3,6 +3,7 @@ from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, U
 from sqlalchemy.orm import relationship
 from .database import Base
 
+
 class Client(Base):
     __tablename__ = "clients"
 
@@ -14,6 +15,7 @@ class Client(Base):
 
     parkings = relationship("ClientParking", back_populates="client")
 
+
 class Parking(Base):
     __tablename__ = "parkings"
 
@@ -24,6 +26,7 @@ class Parking(Base):
     count_available_places = Column(Integer, nullable=False)
 
     client_parkings = relationship("ClientParking", back_populates="parking")
+
 
 class ClientParking(Base):
     __tablename__ = "client_parkings"
