@@ -26,6 +26,7 @@ def override_get_db():
 app.dependency_overrides[get_db] = override_get_db
 
 @pytest.fixture(scope="function")
+
 def db_session():
     Base.metadata.create_all(bind=engine)
     session = TestingSessionLocal()
@@ -34,6 +35,7 @@ def db_session():
     Base.metadata.drop_all(bind=engine)
 
 @pytest.fixture(scope="function")
+
 def client(db_session):
     client_obj = Client(
         name="Иван",
