@@ -179,6 +179,6 @@ def test_exit_parking(client):
                                  json={"client_id":
                                        new_client.id,
                                        "parking_id": client.app.state.parking_id}
-                                )
+        )
         assert response.status_code == 400
         assert response.json()["detail"] == "Client is not parked here"
