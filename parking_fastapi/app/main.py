@@ -77,8 +77,9 @@ def enter_parking(
     db.commit()
     db.refresh(parking)
     db.refresh(db_record)
-    
+
     return db_record
+
 
 @app.delete("/client_parkings", response_model=schemas.ExitResponse)
 def exit_parking(
