@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class ClientBase(BaseModel):
     name: str
@@ -14,8 +14,7 @@ class ClientCreate(ClientBase):
 class Client(ClientBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ParkingBase(BaseModel):
     address: str
@@ -29,8 +28,7 @@ class Parking(ParkingBase):
     id: int
     count_available_places: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ClientParkingBase(BaseModel):
     client_id: int
@@ -44,8 +42,7 @@ class ClientParking(ClientParkingBase):
     time_in: datetime
     time_out: Optional[datetime]
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ExitResponse(BaseModel):
     message: str
