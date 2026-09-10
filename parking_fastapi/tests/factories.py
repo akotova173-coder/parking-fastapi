@@ -5,7 +5,7 @@ from tests.conftest import TestingSessionLocal
 
 
 class ClientFactory(factory.alchemy.SQLAlchemyModelFactory):
-    
+
     class Meta:
         model = Client
         sqlalchemy_session = TestingSessionLocal()
