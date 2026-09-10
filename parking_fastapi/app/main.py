@@ -19,15 +19,15 @@ def get_clients(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 def get_client(client: schemas.Client = Depends(dependencies.get_client_or_404)):
     return client
 
-"/clients", response_model=schemas.Client, status_code=201
+@app.post("/clients", response_model=schemas.Client, status_code=201)
 def create_client(client: schemas.ClientCreate, db: Session = Depends(get_db)):
     return crud.create_client(db, client)
 
-"/parkings", response_model=schemas.Parking, status_code=201
+@app.post("/parkings", response_model=schemas.Parking, status_code=201)
 def create_parking(parking: schemas.ParkingCreate, db: Session = Depends(get_db)):
     return crud.create_parking(db, parking)
 
-"/client_parkings", response_model=schemas.ClientParking, status_code=201
+@app.post("/client_parkings", response_model=schemas.ClientParking, status_code=201)
 def enter_parking(
     record: schemas.ClientParkingCreate,
     db: Session = Depends(get_db),
