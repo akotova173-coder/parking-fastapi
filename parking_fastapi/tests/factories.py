@@ -1,7 +1,7 @@
 import factory
 from factory import Faker, LazyAttribute, Maybe
 from app.models import Client, Parking
-from app.database import TestingSessionLocal
+from tests.conftest import TestingSessionLocal
 
 class ClientFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
