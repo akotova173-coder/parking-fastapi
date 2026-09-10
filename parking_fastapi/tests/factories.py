@@ -21,7 +21,7 @@ class ClientFactory(factory.alchemy.SQLAlchemyModelFactory):
 
 
 class ParkingFactory(factory.alchemy.SQLAlchemyModelFactory):
-    
+
     class Meta:
         model = Parking
         sqlalchemy_session = TestingSessionLocal()
