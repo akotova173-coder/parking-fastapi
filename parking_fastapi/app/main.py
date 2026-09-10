@@ -72,12 +72,19 @@ def enter_parking(
 
 @app.delete("/client_parkings", response_model=schemas.ExitResponse)
 def exit_parking(
-    record: schemas.ClientParkingCreate,
+    client_id: int,
+    parking_id: int,
     db: Session = Depends(get_db),
-    client=Depends(dependencies.get_client_or_404),
-    parking=Depends(dependencies.get_parking_or_404),
 ):
-    active = crud.get_active_record(db, record.client_id, record.parking_id)
+    client = crud.get_client(db, client_id)
+    if not client:
+        raise HTTPException(status_code=404, detail="Client not found")
+
+    parking = crud.get_parking(db, parking_id)
+    if not parking:
+        raise HTTPException(status_code=404, detail="Parking not found")
+
+    active = crud.get_active_record(db, client_id, parking_id)
     if not active:
         raise HTTPException(status_code=400, detail="Client is not parked here")
 
@@ -86,10 +93,12 @@ def exit_parking(
 
     amount = 100
     parking.count_available_places += 1
-    updated_record = crud.update_parking_record_out(db, active)
+    active.time_out = datetime.utcnow()
+    db.commit()
+    db.refresh(active)
 
     return schemas.ExitResponse(
         message="Exit successful",
         amount_charged=amount,
-        record=updated_record
+        record=active
     )
