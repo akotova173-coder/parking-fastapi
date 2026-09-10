@@ -175,10 +175,9 @@ def test_exit_parking(client):
         db_session.add(new_client)
         db_session.commit()
 
-        response = client.delete("/client_parkings",
-                                 json={"client_id":
-                                       new_client.id,
-                                       "parking_id": client.app.state.parking_id}
-        )
+        response = client.delete(
+    f"/client_parkings?client_id={new_client.id}"
+    f"&parking_id={client.app.state.parking_id}"
+)
         assert response.status_code == 400
         assert response.json()["detail"] == "Client is not parked here"
