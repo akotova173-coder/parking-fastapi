@@ -1,5 +1,5 @@
 import pytest
-from app.models import Client, Parking, ClientParking
+from app.models import Client, Parking
 from tests.factories import ClientFactory, ParkingFactory
 
 @pytest.mark.parametrize("route", ["/", "/clients", "/clients/1"])
@@ -75,7 +75,11 @@ def test_enter_parking(client):
     client_id = app_state.client_id
     parking_id = app_state.parking_id
 
-    response = client.post("/client_parkings", json={"client_id": client_id, "parking_id": parking_id})
+    response = client.post(
+        "/client_parkings", 
+        json={"client_id": client_id, 
+              "parking_id": parking_id}
+    )
     assert response.status_code == 201
     resp_json = response.json()
     assert resp_json["client_id"] == client_id
@@ -90,7 +94,11 @@ def test_exit_parking(client):
     client_id = app_state.client_id
     parking_id = app_state.parking_id
 
-    enter = client.post("/client_parkings", json={"client_id": client_id, "parking_id": parking_id})
+    enter = client.post(
+        "/client_parkings", 
+        json={"client_id": client_id, 
+              "parking_id": parking_id}
+    )
     assert enter.status_code == 201
 
     exit_resp = client.delete(f"/client_parkings?client_id={client_id}&parking_id={parking_id}")
@@ -107,8 +115,8 @@ def test_exit_parking(client):
     def test_enter_parking_closed_or_no_places(client, db_session, closed):
         data = {
             "address": "Тестовая",
-            "count_places": 0 if closed else 10,
-            "opened": False if closed else True
+            "count_places": 10 if not closed else 0,
+            "opened": not closed
         }
         if closed:
             # закрытая
@@ -145,7 +153,11 @@ def test_exit_parking(client):
         assert exit_resp.json()["detail"] == "No credit card linked"
 
     def test_exit_parking_not_parked(client, db_session):
-        new_client = Client(name="Новый", surname="Клиент", credit_card="1111222233334444", car_number="D123EF")
+        new_client = Client(
+            name="Новый", 
+            surname="Клиент", 
+            credit_card="1111222233334444", 
+            car_number="D123EF")
         db_session.add(new_client)
         db_session.commit()
 
