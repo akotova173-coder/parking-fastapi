@@ -93,7 +93,7 @@ def test_exit_parking(client):
     enter = client.post("/client_parkings", json={"client_id": client_id, "parking_id": parking_id})
     assert enter.status_code == 201
 
-    exit_resp = client.request("DELETE", "/client_parkings", json={"client_id": client_id, "parking_id": parking_id})
+    exit_resp = client.delete(f"/client_parkings?client_id={client_id}&parking_id={parking_id}")
     assert exit_resp.status_code == 200
     exit_json = exit_resp.json()
     assert exit_json["message"] == "Exit successful"
