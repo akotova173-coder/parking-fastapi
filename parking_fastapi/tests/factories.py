@@ -3,7 +3,9 @@ from factory import Faker, LazyAttribute, Maybe
 from app.models import Client, Parking
 from tests.conftest import TestingSessionLocal
 
+
 class ClientFactory(factory.alchemy.SQLAlchemyModelFactory):
+    
     class Meta:
         model = Client
         sqlalchemy_session = TestingSessionLocal()
@@ -17,7 +19,9 @@ class ClientFactory(factory.alchemy.SQLAlchemyModelFactory):
     )
     car_number = Faker("license_plate")
 
+
 class ParkingFactory(factory.alchemy.SQLAlchemyModelFactory):
+    
     class Meta:
         model = Parking
         sqlalchemy_session = TestingSessionLocal()
