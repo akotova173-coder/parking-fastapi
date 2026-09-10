@@ -1,7 +1,8 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 from .database import get_db
-from . import crud, schemas
+from . import crud
+
 
 def get_client_or_404(client_id: int, db: Session = Depends(get_db)):
     client = crud.get_client(db, client_id)
@@ -9,11 +10,13 @@ def get_client_or_404(client_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Client not found")
     return client
 
+
 def get_parking_or_404(parking_id: int, db: Session = Depends(get_db)):
     parking = crud.get_parking(db, parking_id)
     if not parking:
         raise HTTPException(status_code=404, detail="Parking not found")
     return parking
+
 
 def check_parking_available(parking=Depends(get_parking_or_404)):
     if not parking.opened:
@@ -21,6 +24,7 @@ def check_parking_available(parking=Depends(get_parking_or_404)):
     if parking.count_available_places <= 0:
         raise HTTPException(status_code=400, detail="No available places")
     return parking
+
 
 def check_client_not_parked(client_id: int, parking_id: int, db: Session = Depends(get_db)):
     active = crud.get_active_record(db, client_id, parking_id)
