@@ -33,8 +33,8 @@ def enter_parking(
     db: Session = Depends(get_db),
     _client=Depends(dependencies.get_client_or_404),
     parking=Depends(dependencies.check_parking_available),
-    _not_parked=Depends(lambda: dependencies.check_client_not_parked(record.client_id, record.parking_id, db))
 ):
+    dependencies.check_client_not_parked(record.client_id, record.parking_id, db)
     new_record = crud.create_parking_record(db, record)
     parking.count_available_places -= 1
     db.commit()
