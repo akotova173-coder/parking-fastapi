@@ -44,6 +44,7 @@ def get_parking(
         raise HTTPException(status_code=404, detail="Parking not found")
     return parking
 
+
 @app.post("/client_parkings", response_model=schemas.ClientParking, status_code=201)
 def enter_parking(
     record: schemas.ClientParkingCreate,
