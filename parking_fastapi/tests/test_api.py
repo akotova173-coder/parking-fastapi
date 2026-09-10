@@ -137,7 +137,10 @@ def test_exit_parking(client):
         parking_id = resp.json()["id"]
 
         client_id = client.app.state.client_id
-        response = client.post("/client_parkings", json={"client_id": client_id, "parking_id": parking_id})
+        response = client.post(
+            "/client_parkings", 
+            json={"client_id": client_id, "parking_id": parking_id}
+        )
         assert response.status_code == 400
         if closed:
             assert response.json()["detail"] == "Parking is closed"
@@ -151,11 +154,15 @@ def test_exit_parking(client):
         db_session.commit()
 
         enter = client.post("/client_parkings",
-                            json={"client_id": no_card_client.id, "parking_id": app_state.parking_id})
+                            json={"client_id": 
+                                  no_card_client.id, 
+                                  "parking_id": app_state.parking_id})
         assert enter.status_code == 201
 
         exit_resp = client.delete("/client_parkings",
-                                  json={"client_id": no_card_client.id, "parking_id": app_state.parking_id})
+                                  json={"client_id": 
+                                        no_card_client.id, 
+                                        "parking_id": app_state.parking_id})
         assert exit_resp.status_code == 400
         assert exit_resp.json()["detail"] == "No credit card linked"
 
@@ -169,6 +176,9 @@ def test_exit_parking(client):
         db_session.commit()
 
         response = client.delete("/client_parkings",
-                                 json={"client_id": new_client.id, "parking_id": client.app.state.parking_id})
+                                 json={"client_id": 
+                                       new_client.id, 
+                                       "parking_id": client.app.state.parking_id}
+                                )
         assert response.status_code == 400
         assert response.json()["detail"] == "Client is not parked here"
