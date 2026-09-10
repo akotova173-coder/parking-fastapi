@@ -101,9 +101,7 @@ def test_exit_parking(client):
     assert exit_json["record"]["time_out"] is not None
 
     parking_resp = client.get(f"/parkings/{parking_id}")
-    assert parking_resp.json()["count_available_places"]
-
-    == 5
+    assert parking_resp.json()["count_available_places"] == 5
 
     @pytest.mark.parametrize("closed, expected_code", [(False, 400), (True, 400)])
     def test_enter_parking_closed_or_no_places(client, db_session, closed):
