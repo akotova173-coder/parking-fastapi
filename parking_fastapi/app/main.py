@@ -31,10 +31,24 @@ def create_parking(parking: schemas.ParkingCreate, db: Session = Depends(get_db)
 def enter_parking(
     record: schemas.ClientParkingCreate,
     db: Session = Depends(get_db),
-    _client=Depends(dependencies.get_client_or_404),
-    parking=Depends(dependencies.check_parking_available),
 ):
-    dependencies.check_client_not_parked(record.client_id, record.parking_id, db)
+    client = crud.get_client(db, record.client_id)
+    if not client:
+        raise HTTPException(status_code=404, detail="Client not found")
+
+    parking = crud.get_parking(db, record.parking_id)
+    if not parking:
+        raise HTTPException(status_code=404, detail="Parking not found")
+
+    if not parking.opened:
+        raise HTTPException(status_code=400, detail="Parking is closed")
+    if parking.count_available_places <= 0:
+        raise HTTPException(status_code=400, detail="No available places")
+
+    active = crud.get_active_record(db, record.client_id, record.parking_id)
+    if active:
+        raise HTTPException(status_code=400, detail="Client is already parked here")
+
     new_record = crud.create_parking_record(db, record)
     parking.count_available_places -= 1
     db.commit()
