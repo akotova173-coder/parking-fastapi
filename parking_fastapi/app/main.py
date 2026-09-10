@@ -8,25 +8,31 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Parking API", version="1.0")
 
+
 @app.get("/")
 def root():
     return {"message": "Parking API is running"}
+
 
 @app.get("/clients", response_model=list[schemas.Client])
 def get_clients(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_clients(db, skip=skip, limit=limit)
 
+
 @app.get("/clients/{client_id}", response_model=schemas.Client)
 def get_client(client: schemas.Client = Depends(dependencies.get_client_or_404)):
     return client
+
 
 @app.post("/clients", response_model=schemas.Client, status_code=201)
 def create_client(client: schemas.ClientCreate, db: Session = Depends(get_db)):
     return crud.create_client(db, client)
 
+
 @app.post("/parkings", response_model=schemas.Parking, status_code=201)
 def create_parking(parking: schemas.ParkingCreate, db: Session = Depends(get_db)):
     return crud.create_parking(db, parking)
+
 
 @app.get("/parkings/{parking_id}", response_model=schemas.Parking)
 def get_parking(
