@@ -37,12 +37,14 @@ class ClientParkingBase(BaseModel):
 class ClientParkingCreate(ClientParkingBase):
     pass
 
+
 class ClientParking(ClientParkingBase):
     id: int
     time_in: datetime
     time_out: Optional[datetime]
 
     model_config = ConfigDict(from_attributes=True)
+
 
 class ExitResponse(BaseModel):
     message: str
