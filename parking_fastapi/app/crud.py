@@ -9,7 +9,7 @@ def get_clients(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Client).offset(skip).limit(limit).all()
 
 def create_client(db: Session, client: schemas.ClientCreate):
-    **client.model_dump()
+    db_client = models.Client(**client.model_dump())
     db.add(db_client)
     db.commit()
     db.refresh(db_client)
