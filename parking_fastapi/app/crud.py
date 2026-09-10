@@ -9,7 +9,7 @@ def get_clients(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Client).offset(skip).limit(limit).all()
 
 def create_client(db: Session, client: schemas.ClientCreate):
-    db_client = models.Client(**client.dict())
+    **client.model_dump()
     db.add(db_client)
     db.commit()
     db.refresh(db_client)
@@ -20,7 +20,7 @@ def get_parking(db: Session, parking_id: int):
 
 def create_parking(db: Session, parking: schemas.ParkingCreate):
     db_parking = models.Parking(
-        **parking.dict(),
+        **parking.model_dump(),
         count_available_places=parking.count_places
     )
     db.add(db_parking)
