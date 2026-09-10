@@ -36,7 +36,7 @@ def get_active_record(db: Session, client_id: int, parking_id: int):
     ).first()
 
 def create_parking_record(db: Session, record: schemas.ClientParkingCreate):
-    db_record = models.ClientParking(**record.dict())
+    db_record = models.ClientParking(**record.model_dump())
     db.add(db_record)
     db.commit()
     db.refresh(db_record)
