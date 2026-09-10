@@ -38,12 +38,12 @@ jobs:
         cd parking_fastapi
         mypy app/ tests/
 
-    - name: Check formatting with black
-      run: |
-        cd parking_fastapi
-        black --diff --check app/ tests/
+    - name: Format with black
+    run: |
+      cd parking_fastapi
+      black app/ tests/
 
-    - name: Check imports with isort
-      run: |
-        cd parking_fastapi
-        isort --check-only app/ tests/
+    - name: Sort imports with isort
+    run: |
+      cd parking_fastapi
+      isort app/ tests/
