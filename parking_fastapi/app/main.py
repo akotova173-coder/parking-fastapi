@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from .database import get_db, engine
 from . import models, schemas, crud, dependencies
+from datetime import datetime
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -49,11 +50,25 @@ def enter_parking(
     if active:
         raise HTTPException(status_code=400, detail="Client is already parked here")
 
-    new_record = crud.create_parking_record(db, record)
+    existing_record = db.query(models.ClientParking).filter_by(
+        client_id=record.client_id,
+        parking_id=record.parking_id
+    ).first()
+
+    if existing_record:
+        existing_record.time_in = datetime.utcnow()
+        existing_record.time_out = None
+        db_record = existing_record
+    else:
+        db_record = models.ClientParking(**record.model_dump())
+        db.add(db_record)
+
     parking.count_available_places -= 1
     db.commit()
     db.refresh(parking)
-    return new_record
+    db.refresh(db_record)
+    
+    return db_record
 
 @app.delete("/client_parkings", response_model=schemas.ExitResponse)
 def exit_parking(
