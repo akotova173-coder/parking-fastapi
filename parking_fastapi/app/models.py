@@ -18,7 +18,6 @@ class Client(Base):
         'ClientParking', back_populates='client'
     )
 
-
     def to_json(self) -> dict:
         return {
             'id': self.id,
@@ -27,7 +26,6 @@ class Client(Base):
             'credit_card': self.credit_card,
             'car_number': self.car_number,
         }
-
 
     def __repr__(self) -> str:
         return f'<Client {self.name} {self.surname}>'
@@ -46,7 +44,6 @@ class Parking(Base):
         'ClientParking', back_populates='parking'
     )
 
-
     def to_json(self) -> dict:
         return {
             'id': self.id,
@@ -55,7 +52,6 @@ class Parking(Base):
             'count_places': self.count_places,
             'count_available_places': self.count_available_places,
         }
-
 
     def __repr__(self) -> str:
         return f'<Parking {self.address}>'
@@ -77,7 +73,6 @@ class ClientParking(Base):
         UniqueConstraint('client_id', 'parking_id', name='unique_client_parking'),
     )
 
-
     def to_json(self) -> dict:
         return {
             'id': self.id,
@@ -87,7 +82,5 @@ class ClientParking(Base):
             'time_out': self.time_out.isoformat() if self.time_out else None,
         }
 
-
     def __repr__(self) -> str:
         return f'<ClientParking client={self.client_id} parking={self.parking_id}>'
-        
