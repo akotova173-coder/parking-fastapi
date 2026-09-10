@@ -1,0 +1,34 @@
+image: python:3.10
+
+stages:
+  - lint
+  - test
+
+before_script:
+  - cd parking_fastapi
+  - pip install -r requirements.txt
+
+flake8:
+  stage: lint
+  script:
+    - flake8 app/ tests/
+
+mypy:
+  stage: lint
+  script:
+    - mypy app/ tests/
+
+black:
+  stage: lint
+  script:
+    - black --diff --check app/ tests/
+
+isort:
+  stage: lint
+  script:
+    - isort --check-only app/ tests/
+
+pytest:
+  stage: test
+  script:
+    - pytest -v tests/
