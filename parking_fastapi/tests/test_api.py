@@ -2,10 +2,12 @@ import pytest
 from app.models import Client, Parking
 from tests.factories import ClientFactory, ParkingFactory
 
+
 @pytest.mark.parametrize("route", ["/", "/clients", "/clients/1"])
 def test_get_routes(client, route):
     response = client.get(route)
     assert response.status_code == 200
+
 
 def test_create_client(client, db_session):
     data = {
@@ -24,6 +26,7 @@ def test_create_client(client, db_session):
     assert new_client is not None
     assert new_client.credit_card == "9876543210987654"
 
+
 def test_create_parking(client, db_session):
     data = {
         "address": "ул. Парковая, 10",
@@ -40,6 +43,7 @@ def test_create_parking(client, db_session):
     parking = db_session.query(Parking).filter(Parking.id == resp_json["id"]).first()
     assert parking is not None
 
+
 def test_create_client_with_factory(client, db_session):
     ClientFactory._meta.sqlalchemy_session = db_session
     old_count = db_session.query(Client).count()
@@ -54,6 +58,7 @@ def test_create_client_with_factory(client, db_session):
 
     new_count = db_session.query(Client).count()
     assert new_count == old_count + 1
+
 
 def test_create_parking_with_factory(client, db_session):
     ParkingFactory._meta.sqlalchemy_session = db_session
@@ -70,14 +75,15 @@ def test_create_parking_with_factory(client, db_session):
     new_count = db_session.query(Parking).count()
     assert new_count == old_count + 1
 
+
 def test_enter_parking(client):
     app_state = client.app.state
     client_id = app_state.client_id
     parking_id = app_state.parking_id
 
     response = client.post(
-        "/client_parkings", 
-        json={"client_id": client_id, 
+        "/client_parkings",
+        json={"client_id": client_id,
               "parking_id": parking_id}
     )
     assert response.status_code == 201
@@ -89,14 +95,15 @@ def test_enter_parking(client):
     parking_resp = client.get(f"/parkings/{parking_id}")
     assert parking_resp.json()["count_available_places"] == 4
 
+
 def test_exit_parking(client):
     app_state = client.app.state
     client_id = app_state.client_id
     parking_id = app_state.parking_id
 
     enter = client.post(
-        "/client_parkings", 
-        json={"client_id": client_id, 
+        "/client_parkings",
+        json={"client_id": client_id,
               "parking_id": parking_id}
     )
     assert enter.status_code == 201
@@ -154,9 +161,9 @@ def test_exit_parking(client):
 
     def test_exit_parking_not_parked(client, db_session):
         new_client = Client(
-            name="Новый", 
-            surname="Клиент", 
-            credit_card="1111222233334444", 
+            name="Новый",
+            surname="Клиент",
+            credit_card="1111222233334444",
             car_number="D123EF")
         db_session.add(new_client)
         db_session.commit()
